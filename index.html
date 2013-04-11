@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+
+<head>
+    <script type="text/javascript" src="components/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="components/isotope/jquery.isotope.min.js"></script>
+    <script type="text/javascript" src="components/Swipe/swipe.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+
+        google.load("feeds", "1");
+
+        function initialize() {
+            var feed = new google.feeds.Feed("http://www.emagrecerperderbarriga.com/feed/");
+            feed.includeHistoricalEntries();
+            feed.load(function(result) {
+                if (!result.error) {
+                    var $feed = $('#feed'),
+                            items = [];
+
+                    $feed.isotope({
+                        masonry: {
+                            columnWidth: 120
+                        },
+                        sortBy: 'number',
+                        getSortData: {
+                            number: function( $elem ) {
+                                var number =
+                                        $elem.attr('data-number');
+                                return parseInt( number, 10 );
+                            },
+                            alphabetical: function( $elem ) {
+                                var name = $elem.find('.name'),
+                                        itemText = name.length ? name : $elem;
+                                return itemText.text();
+                            }
+                        }
+                    });
+
+                    /*
+                    result.feed
+
+                     author: ""
+                    description:"Como emagrecer saúdavelmente"
+                    entries:[Object { title="Promessas para cuidar do corpo",  more...}]
+                     feedUrl: "http://www.emagrecerperderbarriga.com/feed/"
+                     link: "http://www.emagrecerperderbarriga.com"
+                     title: "Emagrecer - Perder Barriga"
+                    type: "rss20"
+
+                     */
+
+                    $('#main').append('<h1>' + result.feed.title + '</h1>');
+                    for (var i = 0; i < result.feed.entries.length; i++) {
+                        /*
+                         author: "Matheus Martins"
+                         categories: ["Exercícios e práticas"]
+                         content:"<p style="text-align:ju...er Barriga</a>.</p></p>"
+                         contentSnippet: "Exercícios fisicos para...car a musculatura e ..."
+                         link: "http://www.emagrecerper...-fisicos-para-emagrecer"
+                         publishedDate:"Fri, 09 Nov 2012 10:47:51 -0800"
+                         title:"Exercícios fisicos para emagrecer"
+                         */
+                        var entry = result.feed.entries[i];
+                        items.push("<div class=\"element\"" +  + ">" +
+                                "<a href=\"" + entry.link + "\">" +
+                                "<h1>" + entry.title + "</h1>" +
+                                "<p>" + entry.contentSnippet + "</p>" +
+                                "</a>" +
+                                "</div>");
+
+                    }
+
+                    var $items = $( items.join('')).addClass('example');
+
+                    // set random number for each item
+                    $items.each(function(){
+                        $(this).attr('data-number', ~~( Math.random() * 100 + 15 ));
+                    });
+
+                    $items.imagesLoaded(function(){
+                        $feed.append( $items );
+                        $items.each(function(){
+                            var $this = $(this),
+                                    itemHeight = Math.ceil( $this.height() / 120 ) * 120 - 10;
+                            $this.height( itemHeight );
+                        });
+                        $feed.isotope( 'insert', $items );
+                    });
+
+
+
+                    window.mySwipe = new Swipe(document.getElementById('slider'), {
+                        speed: 400,
+                        auto: 3000
+                    });
+
+//                    $feed.on('click', 'a', function() {
+//                        // TODO mostrar noticia
+//                        return false;
+//                    });
+                }
+            });
+
+        }
+        google.setOnLoadCallback(initialize);
+
+    </script>
+    <link rel="stylesheet" href="components/isotope/css/style.css"/>
+
+    <style type="text/css">
+            /* Swipe 2 required styles */
+        .swipe {
+            overflow: hidden;
+            visibility: hidden;
+            position: relative;
+        }
+        .swipe-wrap {
+            overflow: hidden;
+            position: relative;
+        }
+        .swipe-wrap > div {
+            float:left;
+            width:100%;
+            position: relative;
+        }
+            /* END required styles */
+
+    </style>
+</head>
+<body>
+<a href="#prev" onclick="window.mySwipe.prev(); return false;">Prev</a>
+<a href="#next" onclick="window.mySwipe.next(); return false;">Next</a>
+<div id='slider' class='swipe'>
+    <div class='swipe-wrap'>
+        <div id="main"></div>
+        <div id="feed"></div>
+    </div>
+</div>
+</body>
+</html>
