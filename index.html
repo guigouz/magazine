@@ -14,6 +14,7 @@
         function initialize() {
             var feed = new google.feeds.Feed("http://www.emagrecerperderbarriga.com/feed/");
             feed.includeHistoricalEntries();
+            feed.setNumEntries(30);
             feed.load(function(result) {
                 if (!result.error) {
                     var $feed = $('#feed'),
