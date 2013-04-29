@@ -2,10 +2,14 @@
 <html>
 
 <head>
-    <script type="text/javascript" src="components/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="components/isotope/jquery.isotope.min.js"></script>
-    <script type="text/javascript" src="components/Swipe/swipe.js"></script>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript"
+            src="components/jquery/jquery.min.js"></script>
+    <script type="text/javascript"
+            src="components/isotope/jquery.isotope.min.js"></script>
+    <script type="text/javascript"
+            src="components/Swipe/swipe.js"></script>
+    <script type="text/javascript"
+            src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
 
 
@@ -15,9 +19,10 @@
             var feed = new google.feeds.Feed("http://www.emagrecerperderbarriga.com/feed/");
             feed.includeHistoricalEntries();
             feed.setNumEntries(30);
-            feed.load(function(result) {
+            feed.load(function (result) {
                 if (!result.error) {
                     var $feed = $('#feed'),
+                            $container = $('#container'),
                             items = [];
 
                     $feed.isotope({
@@ -26,12 +31,12 @@
                         },
                         sortBy: 'number',
                         getSortData: {
-                            number: function( $elem ) {
+                            number: function ($elem) {
                                 var number =
                                         $elem.attr('data-number');
-                                return parseInt( number, 10 );
+                                return parseInt(number, 10);
                             },
-                            alphabetical: function( $elem ) {
+                            alphabetical: function ($elem) {
                                 var name = $elem.find('.name'),
                                         itemText = name.length ? name : $elem;
                                 return itemText.text();
@@ -40,15 +45,15 @@
                     });
 
                     /*
-                    result.feed
+                     result.feed
 
                      author: ""
-                    description:"Como emagrecer saúdavelmente"
-                    entries:[Object { title="Promessas para cuidar do corpo",  more...}]
+                     description:"Como emagrecer saúdavelmente"
+                     entries:[Object { title="Promessas para cuidar do corpo",  more...}]
                      feedUrl: "http://www.emagrecerperderbarriga.com/feed/"
                      link: "http://www.emagrecerperderbarriga.com"
                      title: "Emagrecer - Perder Barriga"
-                    type: "rss20"
+                     type: "rss20"
 
                      */
 
@@ -64,32 +69,36 @@
                          title:"Exercícios fisicos para emagrecer"
                          */
                         var entry = result.feed.entries[i];
-                        items.push("<div class=\"element\"" +  + ">" +
+                        items.push("<div class=\"element\"" + +">" +
                                 "<a href=\"" + entry.link + "\">" +
                                 "<h1>" + entry.title + "</h1>" +
                                 "<p>" + entry.contentSnippet + "</p>" +
                                 "</a>" +
                                 "</div>");
 
+                        $container.append("<div>" +
+                                "<h1>" + entry.title + "</h1>" +
+                                "<p>" + entry.content + "</p>" +
+                                "</div>")
+
                     }
 
-                    var $items = $( items.join('')).addClass('example');
+                    var $items = $(items.join('')).addClass('example');
 
                     // set random number for each item
-                    $items.each(function(){
+                    $items.each(function () {
                         $(this).attr('data-number', ~~( Math.random() * 100 + 15 ));
                     });
 
-                    $items.imagesLoaded(function(){
-                        $feed.append( $items );
-                        $items.each(function(){
+                    $items.imagesLoaded(function () {
+                        $feed.append($items);
+                        $items.each(function () {
                             var $this = $(this),
-                                    itemHeight = Math.ceil( $this.height() / 120 ) * 120 - 10;
-                            $this.height( itemHeight );
+                                    itemHeight = Math.ceil($this.height() / 120) * 120 - 10;
+                            $this.height(itemHeight);
                         });
-                        $feed.isotope( 'insert', $items );
+                        $feed.isotope('insert', $items);
                     });
-
 
 
                     window.mySwipe = new Swipe(document.getElementById('slider'), {
@@ -117,22 +126,25 @@
             visibility: hidden;
             position: relative;
         }
+
         .swipe-wrap {
             overflow: hidden;
             position: relative;
         }
+
         .swipe-wrap > div {
-            float:left;
-            width:100%;
+            float: left;
+            width: 100%;
             position: relative;
         }
+
             /* END required styles */
 
     </style>
 </head>
 <body>
 <div id='slider' class='swipe'>
-    <div class='swipe-wrap'>
+    <div id="container" class='swipe-wrap'>
         <div id="main"></div>
         <div id="feed"></div>
     </div>
